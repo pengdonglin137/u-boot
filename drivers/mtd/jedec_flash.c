@@ -401,6 +401,25 @@ static const struct amd_flash_info jedec_table[] = {
 		}
 	},
 #endif
+#ifdef CONFIG_SYS_FLASH_LEGACY_1024Kx16
+	{ /* TQ2440 EN29LV160AB */
+		.mfr_id = 0x1c, /* manufacturer_id */
+		.dev_id = 0x2249, /* device_id */
+		.name = "EON EN29LV160AB",
+		.uaddr = {/* 因为 NOR FLASH 的 ADDR0 接到了 S3C2440 的 ADDR1 */
+			[1] = MTD_UADDR_0x0555_0x02AA /* x16 */
+		},
+		.DevSize = SIZE_2MiB,
+		.CmdSet = P_ID_AMD_STD,
+		.NumEraseRegions= 4,
+		.regions = {
+			ERASEINFO(0x04000, 1),
+			ERASEINFO(0x02000, 2),
+			ERASEINFO(0x08000, 1),
+			ERASEINFO(0x10000, 31),
+		}
+	},
+#endif
 };
 
 static inline void fill_info(flash_info_t *info, const struct amd_flash_info *jedec_entry, ulong base)

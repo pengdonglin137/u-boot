@@ -92,6 +92,10 @@ config TARGET_SMDK2410
 	bool "Support smdk2410"
 	select CPU_ARM920T
 
+config TARGET_TQ2440
+	bool "Support tq2440"
+	select CPU_ARM920T
+
 config TARGET_INTEGRATORAP_CM926EJS
 	bool "Support integratorap_cm926ejs"
 	select CPU_ARM926EJS
@@ -907,6 +911,7 @@ source "board/phytec/pcm051/Kconfig"
 source "board/ppcag/bg0900/Kconfig"
 source "board/pxa255_idp/Kconfig"
 source "board/samsung/smdk2410/Kconfig"
+source "board/samsung/tq2440/Kconfig"
 source "board/sandisk/sansa_fuze_plus/Kconfig"
 source "board/scb9328/Kconfig"
 source "board/schulercontrol/sc_sps_1/Kconfig"

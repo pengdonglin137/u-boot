@@ -1,8 +1,8 @@
 /*
  *  armboot - Startup Code for ARM920 CPU-core
  *
- *  Copyright (c) 2001	Marius Gr枚ger <mag@sysgo.de>
- *  Copyright (c) 2002	Alex Z眉pke <azu@sysgo.de>
+ *  Copyright (c) 2001	Marius Gr鰃er <mag@sysgo.de>
+ *  Copyright (c) 2002	Alex Z黳ke <azu@sysgo.de>
  *  Copyright (c) 2002	Gary Jennejohn <garyj@denx.de>
  *
  * SPDX-License-Identifier:	GPL-2.0+
@@ -28,6 +28,8 @@
 	.globl	reset
 
 reset:
+
+#ifdef CONFIG_SPL_BUILD
 	/*
 	 * set the cpu to SVC32 mode
 	 */
@@ -57,11 +59,14 @@ copyex:
 #  define pWTCON	0x15300000
 #  define INTMSK	0x14400008	/* Interrupt-Controller base addresses */
 #  define CLKDIVN	0x14800014	/* clock divisor register */
-#else
+#elif defined(CONFIG_S3C2440)
 #  define pWTCON	0x53000000
 #  define INTMSK	0x4A000008	/* Interrupt-Controller base addresses */
 #  define INTSUBMSK	0x4A00001C
 #  define CLKDIVN	0x4C000014	/* clock divisor register */
+#  define MPLLCON	0x4C000004	/* 系统主频配置寄存器 */
+#  define UPLLCON	0x4C000008	/* USB 频率配置寄存器 */
+#  define CAMDIVN	0x4C000018	/* 照相机时钟分频寄存器 */
 # endif
 
 	ldr	r0, =pWTCON
@@ -78,13 +83,49 @@ copyex:
 	ldr	r1, =0x3ff
 	ldr	r0, =INTSUBMSK
 	str	r1, [r0]
-# endif
+# elif defined(CONFIG_S3C2440)
+	ldr	r1, =0x7fff
+	ldr	r0, =INTSUBMSK
+	str	r1, [r0]
+#endif
 
+#if defined(CONFIG_S3C2410)
 	/* FCLK:HCLK:PCLK = 1:2:4 */
 	/* default FCLK is 120 MHz ! */
 	ldr	r0, =CLKDIVN
 	mov	r1, #3
 	str	r1, [r0]
+#elif defined(CONFIG_S3C2440)
+	ldr	r0, =CAMDIVN
+	mov	r1, #0
+	str	r1, [r0]
+	/* FCLK:HCLK:PCLK = 8:2:1 */
+	/* default FCLK is 400 MHz ! */
+	ldr	r0, =CLKDIVN
+	mov	r1, #5
+	str	r1, [r0]
+
+	/*如果 HDIVN 不等于 0， CPU 必须设置为异步总线模式*/
+	mrc p15,0,r0,c1,c0,0
+	orr r0,r0,#0xc0000000
+	mcr p15,0,r0,c1,c0,0
+
+	ldr r0, =UPLLCON
+	ldr r1, =0x38022 // USB 时钟 48MHZ
+	str r1, [r0]
+
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+	nop
+
+	ldr r0, =MPLLCON
+	ldr r1, =0x5c011 //CPU 时钟 400MHZ
+	str r1, [r0]
+#endif
 #endif	/* CONFIG_S3C24X0 */
 
 	/*
@@ -93,6 +134,7 @@ copyex:
 	 */
 #ifndef CONFIG_SKIP_LOWLEVEL_INIT
 	bl	cpu_init_crit
+#endif
 #endif
 
 	bl	_main

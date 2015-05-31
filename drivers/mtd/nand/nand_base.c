@@ -236,6 +236,7 @@ static void nand_select_chip(struct mtd_info *mtd, int chipnr)
 		chip->cmd_ctrl(mtd, NAND_CMD_NONE, 0 | NAND_CTRL_CHANGE);
 		break;
 	case 0:
+		chip->cmd_ctrl(mtd, NAND_CMD_NONE, NAND_CTRL_CLE | NAND_CTRL_CHANGE);
 		break;
 
 	default:

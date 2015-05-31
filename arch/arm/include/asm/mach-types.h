@@ -54,6 +54,7 @@ extern unsigned int __machine_arch_type;
 #define MACH_TYPE_MX1ADS               160
 #define MACH_TYPE_H7201                161
 #define MACH_TYPE_H7202                162
+#define MACH_TYPE_TQ2440               168
 #define MACH_TYPE_IQ80321              169
 #define MACH_TYPE_KS8695               180
 #define MACH_TYPE_SMDK2410             193

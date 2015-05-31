@@ -83,7 +83,19 @@ clr_gd:
 	str	sp, [r9, #GD_MALLOC_BASE]
 #endif
 	/* mov r0, #0 not needed due to above code */
+
+#if defined(CONFIG_SPL_BUILD)
+	/* Read u-boot from Nandflash to SDRAM address $CONFIG_SYS_TEXT_BASE */
+	ldr r0, =CONFIG_UBOOT_MTD_ADDR               /*nand_read_ll() 1nd argument*/
+	ldr r1, =CONFIG_SYS_TEXT_BASE                /*nand_read_ll() 2st argument*/
+	ldr r2, =CONFIG_UBOOT_LENGTH                 /*nand_read_ll() 3rd argument*/
+
+	bl  copy_code_to_sdram
+
+	ldr pc, =CONFIG_SYS_TEXT_BASE
+#else
 	bl	board_init_f
+#endif
 
 #if ! defined(CONFIG_SPL_BUILD)
 
@@ -139,9 +151,11 @@ clbss_l:cmp	r0, r1			/* while not at end of BSS */
 	blo	clbss_l
 #endif
 
+#if 0
 #if ! defined(CONFIG_SPL_BUILD)
 	bl coloured_LED_init
 	bl red_led_on
+#endif
 #endif
 	/* call board_init_r(gd_t *id, ulong dest_addr) */
 	mov     r0, r9                  /* gd_t */
