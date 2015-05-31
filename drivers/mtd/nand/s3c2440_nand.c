@@ -200,7 +200,7 @@ int board_nand_init(struct nand_chip *nand)
 	nand->ecc.bytes = CONFIG_SYS_NAND_ECCBYTES;
 	nand->ecc.strength = 1;
 #else
-	nand->ecc.mode = NAND_ECC_SOFT;
+	nand->ecc.mode = NAND_ECC_NONE; // NAND_ECC_SOFT
 #endif
 
 #ifdef CONFIG_S3C2440_NAND_BBT
