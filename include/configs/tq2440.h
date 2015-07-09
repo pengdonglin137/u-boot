@@ -85,6 +85,19 @@
 
 #define CONFIG_SYS_DCACHE_OFF
 
+/* I2C
+ *
+ * i2c md 0x50 0x0  在tq2440上的eeprom的地址是0x50
+ * */
+#define CONFIG_CMD_I2C
+#define CONFIG_SYS_I2C
+#define CONFIG_HARD_I2C
+#define CONFIG_SYS_I2C_S3C24X0
+#define CONFIG_SYS_I2C_SPEED 50000
+#define CONFIG_SYS_I2C_SLAVE 0x0
+#define CONFIG_SYS_I2C_S3C24X0_SLAVE CONFIG_SYS_I2C_SLAVE
+#define CONFIG_SYS_I2C_S3C24X0_SPEED CONFIG_SYS_I2C_SPEED
+
 /*
  * Hardware drivers
  */
