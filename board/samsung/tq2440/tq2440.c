@@ -13,6 +13,8 @@
 #include <netdev.h>
 #include <asm/io.h>
 #include <asm/arch/s3c24x0_cpu.h>
+#include <lcd.h>
+#include <version.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -143,3 +145,12 @@ ulong board_flash_get_legacy(ulong base, int banknum, flash_info_t *info)
 	info->interface = FLASH_CFI_X16;
 	return 1;
 }
+
+#ifdef CONFIG_LCD_INFO
+void lcd_show_board_info(void)
+{
+	lcd_printf ("%s (%s - %s)\n", U_BOOT_VERSION, U_BOOT_DATE, U_BOOT_TIME);
+	lcd_printf ("(C) 2008 DENX Software Engineering\n");
+	lcd_printf ("    pengdonglin137@163.com\n");
+}
+#endif /* CONFIG_LCD_INFO */

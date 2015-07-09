@@ -53,6 +53,38 @@
 #define CONFIG_SETUP_MEMORY_TAGS
 #define CONFIG_INITRD_TAG
 
+/* LCD */
+#define CONFIG_LCD
+#define LCD_BPP				LCD_COLOR16
+#define CONFIG_LCD_LOGO
+#undef LCD_TEST_PATTERN
+#define CONFIG_LCD_INFO
+#define CONFIG_LCD_INFO_BELOW_LOGO
+#define CONFIG_SYS_WHITE_ON_BLACK
+#define CONFIG_SYS_CONSOLE_IS_IN_ENV
+#define CONFIG_TQ2440_LCD
+
+#define CONFIG_CONSOLE_MUX
+
+#define	CONFIG_TQ2440_LCD_VBPD		1
+#define	CONFIG_TQ2440_LCD_VFPD		1
+#define	CONFIG_TQ2440_LCD_VSPW		9
+#define	CONFIG_TQ2440_LCD_HBPD		1
+#define	CONFIG_TQ2440_LCD_HFPD		1
+#define	CONFIG_TQ2440_LCD_HSPW		40
+#define	CONFIG_TQ2440_LCD_CLKVAL	4
+
+#define LCD_XSIZE_TFT	 				(480)
+#define LCD_YSIZE_TFT				 	(272)
+
+#define MVAL							(13)
+#define MVAL_USED 						(0)						//0=each frame   1=rate by MVAL
+#define INVVDEN							(1)						//0=normal       1=inverted
+#define BSWP							(0)						//Byte swap control
+#define HWSWP							(1)						//Half word swap control
+
+#define CONFIG_SYS_DCACHE_OFF
+
 /*
  * Hardware drivers
  */
