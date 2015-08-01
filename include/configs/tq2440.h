@@ -40,6 +40,13 @@
 
 #define CONFIG_BOOTARGS  "noinitrd root=/dev/mtdblock2 init=/linuxrc console=ttySAC0,115200n8"
 
+#define MTDIDS_DEFAULT "nand0=tq2440-0"
+#define MTDPARTS_DEFAULT "mtdparts=tq2440-0:1m(u-boot)," \
+	"1m(params)," \
+	"3m(kernel)," \
+	"-(rootfs)"
+
+
 #define CONFIG_OF_LIBFDT	1
 
 #define CONFIG_SYS_GENERIC_BOARD
