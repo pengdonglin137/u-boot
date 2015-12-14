@@ -15,4 +15,8 @@
 #include "vexpress_common.h"
 #define CONFIG_BOOTP_VCI_STRING     "U-boot.armv7.vexpress_ca9x4"
 
+/* command history and audo complete  */
+#define CONFIG_AUTO_COMPLETE
+
+
 #endif /* VEXPRESS_CA9X4_H */

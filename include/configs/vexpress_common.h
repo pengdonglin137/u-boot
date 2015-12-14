@@ -48,6 +48,11 @@
 #define CONFIG_SYS_TEXT_BASE	0x80800000
 #endif
 
+/* netmask */
+#define CONFIG_IPADDR  10.238.233.5
+#define CONFIG_NETMASK 255.255.255.0
+#define CONFIG_SERVERIP 10.238.233.214
+
 /*
  * Physical addresses, offset from V2M_PA_CS0-3
  */
@@ -202,7 +207,11 @@
 #define CONFIG_SYS_INIT_SP_ADDR		CONFIG_SYS_GBL_DATA_OFFSET
 
 /* Basic environment settings */
-#define CONFIG_BOOTCOMMAND		"run bootflash;"
+#define CONFIG_BOOTCOMMAND \
+	"tftp 0x60003000 uImage; " \
+	"setenv bootargs root=/dev/mmcblk0 console=ttyAMA0; " \
+	"bootm 0x60003000 "
+
 #ifdef CONFIG_VEXPRESS_ORIGINAL_MEMORY_MAP
 #define CONFIG_PLATFORM_ENV_SETTINGS \
 		"loadaddr=0x80008000\0" \
