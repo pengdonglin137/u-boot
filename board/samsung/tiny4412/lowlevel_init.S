@@ -1,146 +1,310 @@
 /*
- * Memory Setup stuff - taken from blob memsetup.S
+ * (C) Copyright 2011 Samsung Electronics Co. Ltd
  *
- * Copyright (C) 1999 2000 2001 Erik Mouw (J.A.K.Mouw@its.tudelft.nl) and
- *                     Jan-Derk Bakker (J.D.Bakker@its.tudelft.nl)
+ * See file CREDITS for list of people who contributed to this
+ * project.
  *
- * Modified for the Samsung SMDK2410 by
- * (C) Copyright 2002
- * David Mueller, ELSOFT AG, <d.mueller@elsoft.ch>
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
  *
- * SPDX-License-Identifier:	GPL-2.0+
  */
-
 
 #include <config.h>
+#include <version.h>
+#include <asm/arch/cpu.h>
 
-/* some parameters for the board */
+#include "tiny4212_val.h"
 
-/*
- *
- * Taken from linux/arch/arm/boot/compressed/head-s3c2410.S
- *
- * Copyright (C) 2002 Samsung Electronics SW.LEE  <hitchcar@sec.samsung.com>
- *
- */
+_TEXT_BASE:
+	.word	CONFIG_SYS_TEXT_BASE
 
-#define BWSCON	0x48000000
-
-/* BWSCON */
-#define DW8			(0x0)
-#define DW16			(0x1)
-#define DW32			(0x2)
-#define WAIT			(0x1<<2)
-#define UBLB			(0x1<<3)
-
-#define B1_BWSCON		(DW32)
-#define B2_BWSCON		(DW16)
-#define B3_BWSCON		(DW16 + WAIT + UBLB)
-#define B4_BWSCON		(DW16)
-#define B5_BWSCON		(DW16)
-#define B6_BWSCON		(DW32)
-#define B7_BWSCON		(DW32)
-
-/* BANK0CON */
-#define B0_Tacs			0x0	/*  0clk */
-#define B0_Tcos			0x0	/*  0clk */
-#define B0_Tacc			0x7	/* 14clk */
-#define B0_Tcoh			0x0	/*  0clk */
-#define B0_Tah			0x0	/*  0clk */
-#define B0_Tacp			0x0
-#define B0_PMC			0x0	/* normal */
-
-/* BANK1CON */
-#define B1_Tacs			0x0	/*  0clk */
-#define B1_Tcos			0x0	/*  0clk */
-#define B1_Tacc			0x7	/* 14clk */
-#define B1_Tcoh			0x0	/*  0clk */
-#define B1_Tah			0x0	/*  0clk */
-#define B1_Tacp			0x0
-#define B1_PMC			0x0
-
-#define B2_Tacs			0x0
-#define B2_Tcos			0x0
-#define B2_Tacc			0x7
-#define B2_Tcoh			0x0
-#define B2_Tah			0x0
-#define B2_Tacp			0x0
-#define B2_PMC			0x0
-
-#define B3_Tacs			0x0	/*  0clk */
-#define B3_Tcos			0x3	/*  4clk */
-#define B3_Tacc			0x7	/* 14clk */
-#define B3_Tcoh			0x1	/*  1clk */
-#define B3_Tah			0x0	/*  0clk */
-#define B3_Tacp			0x3     /*  6clk */
-#define B3_PMC			0x0	/* normal */
-
-#define B4_Tacs			0x0	/*  0clk */
-#define B4_Tcos			0x0	/*  0clk */
-#define B4_Tacc			0x7	/* 14clk */
-#define B4_Tcoh			0x0	/*  0clk */
-#define B4_Tah			0x0	/*  0clk */
-#define B4_Tacp			0x0
-#define B4_PMC			0x0	/* normal */
-
-#define B5_Tacs			0x0	/*  0clk */
-#define B5_Tcos			0x0	/*  0clk */
-#define B5_Tacc			0x7	/* 14clk */
-#define B5_Tcoh			0x0	/*  0clk */
-#define B5_Tah			0x0	/*  0clk */
-#define B5_Tacp			0x0
-#define B5_PMC			0x0	/* normal */
-
-#define B6_MT			0x3	/* SDRAM */
-#define B6_Trcd			0x1
-#define B6_SCAN			0x1	/* 9bit */
-
-#define B7_MT			0x3	/* SDRAM */
-#define B7_Trcd			0x1	/* 3clk */
-#define B7_SCAN			0x1	/* 9bit */
-
-/* REFRESH parameter */
-#define REFEN			0x1	/* Refresh enable */
-#define TREFMD			0x0	/* CBR(CAS before RAS)/Auto refresh */
-#define Trp			0x0	/* 2clk */
-#define Trc			0x3	/* 7clk */
-#define Tchr			0x2	/* 3clk */
-#define REFCNT			1113	/* period=15.6us, HCLK=60Mhz, (2048+1-15.6*60) */
-/**************************************/
-
-.globl lowlevel_init
+	.globl lowlevel_init
 lowlevel_init:
-	/* memory control configuration */
-	/* make r0 relative the current location so that it */
-	/* reads SMRDATA out of FLASH rather than memory ! */
-	ldr     r0, =SMRDATA
-	ldr	r1, =CONFIG_SYS_TEXT_BASE
-	sub	r0, r0, r1
-	ldr	r1, =BWSCON	/* Bus Width Status Controller */
-	add     r2, r0, #13*4
-0:
-	ldr     r3, [r0], #4
-	str     r3, [r1], #4
-	cmp     r2, r0
-	bne     0b
 
-	/* everything is fine now */
+	/* use iROM stack in bl2 */
+	ldr	sp, =0x02060000
+	push	{lr}
+
+	ldr	r1, =0x08
+	ldr	r0, =0x110002E0
+	str	r1, [r0, #0x04]
+
+	/* set CP reset to low */
+	ldr	r0, =0x11000C60
+	ldr	r1, [r0]
+	ldr	r2, =0xFFFFFF0F
+	and	r1, r1, r2
+	orr	r1, r1, #0x10
+	str	r1, [r0]
+	ldr	r0, =0x11000C68
+	ldr	r1, [r0]
+	ldr	r2, =0xFFFFFFF3
+	and	r1, r1, r2
+	orr	r1, r1, #0x4
+	str	r1, [r0]
+	ldr	r0, =0x11000C64
+	ldr	r1, [r0]
+	ldr	r2, =0xFFFFFFFD
+	and	r1, r1, r2
+	str	r1, [r0]
+
+	/* During sleep/wakeup or AFTR mode, pmic_init function is not available
+	 * and it causes delays. So except for sleep/wakeup and AFTR mode,
+	 * the below function is needed
+	 */
+
+	bl	read_om
+
+	/* when we already run in ram, we don't need to relocate U-Boot.
+	 * and actually, memory controller must be configured before U-Boot
+	 * is running in ram.
+	 */
+	ldr	r0, =0xff000fff
+	bic	r1, pc, r0		/* r0 <- current base addr of code */
+	ldr	r2, _TEXT_BASE	/* r1 <- original base addr in ram */
+	bic	r2, r2, r0		/* r0 <- current base addr of code */
+	cmp	r1, r2			/* compare r0, r1 */
+	beq	after_copy		/* r0 == r1 then skip sdram init and u-boot.bin loading */
+
+	/* init system clock */
+	bl	system_clock_init
+
+	/* Memory initialize */
+	bl	mem_ctrl_asm_init
+
+	/* init uart for debug */
+	bl	uart_asm_init
+
+	mov	r4, #0x4000
+.L0:
+	sub	r4, r4, #1
+	cmp	r4, #0
+	bne	.L0
+
+	mov	r0, #'\r'
+	bl	uart_asm_putc
+	mov	r0, #'\n'
+	bl	uart_asm_putc
+
+	ldr	r1, =0x40000000
+	ldr	r2, =0x87654321
+	str	r2, [r1]
+	str	r2, [r1, #0x04]
+	str	r2, [r1, #0x08]
+	ldr	r2, =0x55aaaa55
+	str	r2, [r1, #0x10]
+	nop
+
+	mov	r4, #0xC0000
+.L1:
+	subs	r4, r4, #1
+	bne	.L1
+
+	ldr	r0, [r1]
+	bl	uart_asm_putx
+	mov	r0, #'.'
+	bl	uart_asm_putc
+
+	ldr	r0, [r1, #0x04]
+	bl	uart_asm_putx
+	mov	r0, #'.'
+	bl	uart_asm_putc
+
+	ldr	r0, [r1, #0x08]
+	bl	uart_asm_putx
+	mov	r0, #'.'
+	bl	uart_asm_putc
+
+	ldr	r0, [r1, #0x10]
+	bl	uart_asm_putx
+	mov	r0, #'>'
+	bl	uart_asm_putc
+
+	b	load_uboot
+
+after_copy:
+	/* set up C2C */
+	ldr	r0, =EXYNOS4X12_SYSREG_BASE
+	ldr	r2, =GENERAL_CTRL_C2C_OFFSET
+	ldr	r1, [r0, r2]
+	ldr	r3, =0x4000
+	orr	r1, r1, r3
+	str	r1, [r0, r2]
+
+	/* Print 'K' */
+	ldr	r0, =S5PV310_UART_CONSOLE_BASE
+	ldr	r1, =0x4b4b4b4b
+	str	r1, [r0, #UTXH_OFFSET]
+
+	pop	{pc}
+
+read_om:
+	/* Read booting information */
+	ldr	r0, =EXYNOS4X12_POWER_BASE
+	ldr	r1, [r0,#0]
+	bic	r2, r1, #0xffffffc1
+
+	/* NAND BOOT */
+@	cmp	r2, #0x0		@ 512B 4-cycle
+@	moveq	r3, #BOOT_NAND
+
+@	cmp	r2, #0x2		@ 2KB 5-cycle
+@	moveq	r3, #BOOT_NAND
+
+@	cmp	r2, #0x4		@ 4KB 5-cycle	8-bit ECC
+@	moveq	r3, #BOOT_NAND
+
+	cmp	r2, #0xA
+	moveq	r3, #BOOT_ONENAND
+
+	cmp	r2, #0x10		@ 2KB 5-cycle	16-bit ECC
+	moveq	r3, #BOOT_NAND
+
+	/* SD/MMC BOOT */
+	cmp	r2, #0x4
+	moveq	r3, #BOOT_MMCSD
+
+	/* eMMC BOOT */
+	cmp	r2, #0x6
+	moveq	r3, #BOOT_EMMC
+
+	/* eMMC 4.4 BOOT */
+	cmp	r2, #0x8
+	moveq	r3, #BOOT_EMMC_4_4
+	cmp	r2, #0x28
+	moveq	r3, #BOOT_EMMC_4_4
+
+	ldr	r0, =0x10020800
+	str	r3, [r0, #0x0c]
+
 	mov	pc, lr
 
-	.ltorg
-/* the literal pools origin */
 
-SMRDATA:
-    .word (0+(B1_BWSCON<<4)+(B2_BWSCON<<8)+(B3_BWSCON<<12)+(B4_BWSCON<<16)+(B5_BWSCON<<20)+(B6_BWSCON<<24)+(B7_BWSCON<<28))
-    .word ((B0_Tacs<<13)+(B0_Tcos<<11)+(B0_Tacc<<8)+(B0_Tcoh<<6)+(B0_Tah<<4)+(B0_Tacp<<2)+(B0_PMC))
-    .word ((B1_Tacs<<13)+(B1_Tcos<<11)+(B1_Tacc<<8)+(B1_Tcoh<<6)+(B1_Tah<<4)+(B1_Tacp<<2)+(B1_PMC))
-    .word ((B2_Tacs<<13)+(B2_Tcos<<11)+(B2_Tacc<<8)+(B2_Tcoh<<6)+(B2_Tah<<4)+(B2_Tacp<<2)+(B2_PMC))
-    .word ((B3_Tacs<<13)+(B3_Tcos<<11)+(B3_Tacc<<8)+(B3_Tcoh<<6)+(B3_Tah<<4)+(B3_Tacp<<2)+(B3_PMC))
-    .word ((B4_Tacs<<13)+(B4_Tcos<<11)+(B4_Tacc<<8)+(B4_Tcoh<<6)+(B4_Tah<<4)+(B4_Tacp<<2)+(B4_PMC))
-    .word ((B5_Tacs<<13)+(B5_Tcos<<11)+(B5_Tacc<<8)+(B5_Tcoh<<6)+(B5_Tah<<4)+(B5_Tacp<<2)+(B5_PMC))
-    .word ((B6_MT<<15)+(B6_Trcd<<2)+(B6_SCAN))
-    .word ((B7_MT<<15)+(B7_Trcd<<2)+(B7_SCAN))
-    .word ((REFEN<<23)+(TREFMD<<22)+(Trp<<20)+(Trc<<18)+(Tchr<<16)+REFCNT)
-    .word 0x32
-    .word 0x30
-    .word 0x30
+/*
+ * uart_asm_init: Initialize UART in asm mode, 115200bps fixed.
+ * void uart_asm_init(void)
+ */
+	.globl uart_asm_init
+uart_asm_init:
+
+	/* set GPIO to enable UART */
+	@ GPIO setting for UART for UART0/1/2/3
+	ldr	r0, =0x11400000
+	ldr	r1, =0x22222222
+	str	r1, [r0]
+	ldr	r0, =0x11400020
+	ldr	r1, =0x222222
+	str	r1, [r0]
+
+	ldr	r0, =EXYNOS4X12_CLOCK_BASE
+	ldr	r1, =CLK_SRC_PERIL0_VAL
+	ldr	r2, =CLK_SRC_PERIL0_OFFSET
+	str	r1, [r0, r2]
+	ldr	r1, =CLK_DIV_PERIL0_VAL
+	ldr	r2, =CLK_DIV_PERIL0_OFFSET
+	str	r1, [r0, r2]
+
+	ldr	r0, =S5PV310_UART_CONSOLE_BASE
+	ldr	r1, =0x111
+	str	r1, [r0, #UFCON_OFFSET]
+
+	mov	r1, #0x3
+	str	r1, [r0, #ULCON_OFFSET]
+
+	ldr	r1, =0x3c5
+	str	r1, [r0, #UCON_OFFSET]
+
+	ldr	r1, =UART_UBRDIV_VAL
+	str	r1, [r0, #UBRDIV_OFFSET]
+
+	ldr	r1, =UART_UDIVSLOT_VAL
+	str	r1, [r0, #UDIVSLOT_OFFSET]
+
+	ldr	r1, =0x4f4f4f4f
+	str	r1, [r0, #UTXH_OFFSET]		@'O'
+
+	mov	pc, lr
+
+
+load_uboot:
+	ldr	r0, =0x10020800
+	ldr	r1, [r0, #0x0c]
+	cmp	r1, #BOOT_NAND
+	beq	nand_boot
+	cmp	r1, #BOOT_ONENAND
+	beq	onenand_boot
+	cmp	r1, #BOOT_MMCSD
+	beq	mmcsd_boot
+	cmp	r1, #BOOT_EMMC
+	beq	emmc_boot
+	cmp	r1, #BOOT_EMMC_4_4
+	beq	emmc_boot_4_4
+	cmp	r1, #BOOT_NOR
+	beq	nor_boot
+	cmp	r1, #BOOT_SEC_DEV
+	beq	mmcsd_boot
+
+nand_boot:
+	b nand_boot
+
+onenand_boot:
+	b onenand_boot
+
+mmcsd_boot:
+	ldr	r0, =EXYNOS4X12_CLOCK_BASE
+	ldr	r2, =CLK_DIV_FSYS2_OFFSET
+	ldr	r1, [r0, r2]
+	orr	r1, r1, #0xf
+	str	r1, [r0, r2]
+	bl	movi_uboot_copy
+	b	after_copy
+
+emmc_boot:
+	b emmc_boot
+
+emmc_boot_4_4:
+	b emmc_boot_4_4
+
+nor_boot:
+	b nor_boot
+
+check_om_setting:
+	b	check_om_setting
+
+	.globl uart_asm_putc
+uart_asm_putc:
+	push	{r9}
+
+	ldr	r9, =S5PV310_UART_CONSOLE_BASE
+	str	r0, [r9, #UTXH_OFFSET]
+	ldr	r9, =0x20000				@delay
+
+.Luartputc:
+	sub	r9, r9, #1
+	cmp	r9, #0
+	bne	.Luartputc
+
+	pop	{r9}
+	mov	pc, lr
+
+	.globl uart_asm_putx
+uart_asm_putx:
+	stmfd sp!, {r3, r4, r5, lr}
+
+	mov	r5, r0
+	mov	r4, #28
+
+.Luartputx:
+	mov	r0, r5, asr r4
+	and	r0, r0, #15
+	cmp	r0, #9
+	addle	r0, r0, #48
+	addgt	r0, r0, #55
+	bl	uart_asm_putc
+	sub	r4, r4, #4
+	cmn	r4, #4
+	bne	.Luartputx
+
+	ldmfd sp!, {r3, r4, r5, pc}
+

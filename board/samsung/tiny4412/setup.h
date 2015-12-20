@@ -5,8 +5,8 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#ifndef __ODROIDU3_SETUP__
-#define __ODROIDU3_SETUP__
+#ifndef __TINY4412_SETUP__
+#define __TINY4412_SETUP__
 
 /* A/M PLL_CON0 */
 #define SDIV(x)                 ((x) & 0x7)
