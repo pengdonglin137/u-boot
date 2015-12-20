@@ -26,6 +26,9 @@ config TARGET_TRATS2
 config TARGET_ODROID
 	bool "Exynos4412 Odroid board"
 
+config TARGET_TINY4412
+	bool "Exynos4412 tiny4412 board"
+
 config TARGET_ODROID_XU3
 	bool "Exynos5422 Odroid board"
 	select OF_CONTROL
@@ -80,6 +83,7 @@ source "board/samsung/universal_c210/Kconfig"
 source "board/samsung/origen/Kconfig"
 source "board/samsung/trats2/Kconfig"
 source "board/samsung/odroid/Kconfig"
+source "board/samsung/tiny4412/Kconfig"
 source "board/samsung/arndale/Kconfig"
 source "board/samsung/smdk5250/Kconfig"
 source "board/samsung/smdk5420/Kconfig"
