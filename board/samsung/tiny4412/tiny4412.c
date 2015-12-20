@@ -42,24 +42,7 @@ static const char *mmc_regulators[] = {
 
 void set_board_type(void)
 {
-	/* Set GPA1 pin 1 to HI - enable XCL205 output */
-	writel(XCL205_EN_GPIO_CON_CFG, XCL205_EN_GPIO_CON);
-	writel(XCL205_EN_GPIO_DAT_CFG, XCL205_EN_GPIO_CON + 0x4);
-	writel(XCL205_EN_GPIO_PUD_CFG, XCL205_EN_GPIO_CON + 0x8);
-	writel(XCL205_EN_GPIO_DRV_CFG, XCL205_EN_GPIO_CON + 0xc);
-
-	/* Set GPC1 pin 2 to IN - check XCL205 output state */
-	writel(XCL205_STATE_GPIO_CON_CFG, XCL205_STATE_GPIO_CON);
-	writel(XCL205_STATE_GPIO_PUD_CFG, XCL205_STATE_GPIO_CON + 0x8);
-
-	/* XCL205 - needs some latch time */
-	sdelay(200000);
-
-	/* Check GPC1 pin2 - LED supplied by XCL205 - X2 only */
-	if (readl(XCL205_STATE_GPIO_DAT) & (1 << XCL205_STATE_GPIO_PIN))
-		gd->board_type = ODROID_TYPE_X2;
-	else
-		gd->board_type = ODROID_TYPE_U3;
+	gd->board_type = ODROID_TYPE_U3;
 }
 
 const char *get_board_type(void)

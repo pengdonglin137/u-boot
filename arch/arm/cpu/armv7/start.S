@@ -63,11 +63,23 @@ save_boot_params_ret:
 	mcr	p15, 0, r0, c12, c0, 0	@Set VBAR
 #endif
 
+	/* led (GPM4_0~3) on */
+	ldr	r0, =0x110002E0
+	ldr	r1, =0x00001111
+	str	r1, [r0]
+	ldr	r1, =0x0e
+	str	r1, [r0, #0x04]
+
 	/* the mask ROM code should have PLL and others stable */
 #ifndef CONFIG_SKIP_LOWLEVEL_INIT
 	bl	cpu_init_cp15
 	bl	cpu_init_crit
 #endif
+
+	/* led (GPM4_0~3) on */
+	ldr	r0, =0x110002E0
+	ldr	r1, =0x00
+	str	r1, [r0, #0x04]
 
 	bl	_main
 
