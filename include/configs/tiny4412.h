@@ -4,7 +4,7 @@
  * Piotr Wilczek <p.wilczek@samsung.com>
  * Przemyslaw Marczak <p.marczak@samsung.com>
  *
- * Configuation settings for the Odroid-U3 (EXYNOS4412) board.
+ * Configuation settings for the Tiny4412 (EXYNOS4412) board.
  *
  * SPDX-License-Identifier:	GPL-2.0+
  */
@@ -15,38 +15,19 @@
 #include <configs/exynos4-common.h>
 
 #define CONFIG_SYS_PROMPT	"Tiny4412 # "	/* Monitor Command Prompt */
-#define CONFIG_BOARD_NAME	"TINY4412"
+#define CONFIG_TINY4412		1
 
+#define CONFIG_SYS_DCACHE_OFF		1
 #define CONFIG_SYS_L2CACHE_OFF
-#ifndef CONFIG_SYS_L2CACHE_OFF
-#define CONFIG_SYS_L2_PL310
-#define CONFIG_SYS_PL310_BASE	0x10502000
-#endif
 
 #define MACH_TYPE_TINY4412	4608
-
-#define BOOT_ONENAND		0x1
-#define BOOT_NAND		0x40000
-#define BOOT_MMCSD		0x3
-#define BOOT_NOR		0x4
-#define BOOT_SEC_DEV		0x5
-#define BOOT_EMMC		0x6
-#define BOOT_EMMC_4_4		0x7
-
-
-
+#define CONFIG_MACH_TYPE MACH_TYPE_TINY4412
+#undef CONFIG_REVISION_TAG
 
 #define CONFIG_NR_DRAM_BANKS	4
 #define CONFIG_SYS_SDRAM_BASE	0x40000000
 #define SDRAM_BANK_SIZE		(0x10000000)	/* 256 MB */
 #define PHYS_SDRAM_1		CONFIG_SYS_SDRAM_BASE
-#define PHYS_SDRAM_1_SIZE       SDRAM_BANK_SIZE
-#define PHYS_SDRAM_2            (CONFIG_SYS_SDRAM_BASE + SDRAM_BANK_SIZE) /* SDRAM Bank #2 */
-#define PHYS_SDRAM_2_SIZE       SDRAM_BANK_SIZE
-#define PHYS_SDRAM_3            (CONFIG_SYS_SDRAM_BASE + 2 * SDRAM_BANK_SIZE) /* SDRAM Bank #3 */
-#define PHYS_SDRAM_3_SIZE       SDRAM_BANK_SIZE
-#define PHYS_SDRAM_4            (CONFIG_SYS_SDRAM_BASE + 3 * SDRAM_BANK_SIZE) /* SDRAM Bank #4 */
-#define PHYS_SDRAM_4_SIZE       SDRAM_BANK_SIZE
 /* Reserve the last 1 MiB for the secure firmware */
 #define CONFIG_SYS_MEM_TOP_HIDE		(1UL << 20UL)
 #define CONFIG_TZSW_RESERVED_DRAM_SIZE	CONFIG_SYS_MEM_TOP_HIDE
@@ -69,8 +50,6 @@
 #define CONFIG_SYS_CONSOLE_IS_IN_ENV
 
 #define CONFIG_CMD_BOOTZ
-#define CONFIG_FIT
-#define CONFIG_FIT_VERBOSE
 #define CONFIG_BOOTARGS			"Please use defined boot"
 #define CONFIG_BOOTCOMMAND		"run autoboot"
 #define CONFIG_DEFAULT_CONSOLE		"console=ttySAC1,115200n8\0"
@@ -85,35 +64,6 @@
 #define CONFIG_ENV_SIZE			4096
 #define CONFIG_ENV_OFFSET		(SZ_1K * 1280) /* 1.25 MiB offset */
 #define CONFIG_ENV_OVERWRITE
-
-/* Partitions name */
-#define PARTS_BOOT		"boot"
-#define PARTS_ROOT		"platform"
-
-#define CONFIG_DFU_ALT \
-	"uImage fat 0 1;" \
-	"zImage fat 0 1;" \
-	"Image.itb fat 0 1;" \
-	"uInitrd fat 0 1;" \
-	"exynos4412-odroidu3.dtb fat 0 1;" \
-	"exynos4412-odroidx2.dtb fat 0 1;" \
-	""PARTS_BOOT" part 0 1;" \
-	""PARTS_ROOT" part 0 2\0" \
-
-#define CONFIG_SET_DFU_ALT_INFO
-#define CONFIG_SET_DFU_ALT_BUF_LEN	(SZ_1K)
-
-#define CONFIG_DFU_ALT_BOOT_EMMC \
-	"u-boot raw 0x3e 0x800 mmcpart 1;" \
-	"bl1 raw 0x0 0x1e mmcpart 1;" \
-	"bl2 raw 0x1e 0x1d mmcpart 1;" \
-	"tzsw raw 0x83e 0x138 mmcpart 1\0"
-
-#define CONFIG_DFU_ALT_BOOT_SD \
-	"u-boot raw 0x3f 0x800;" \
-	"bl1 raw 0x1 0x1e;" \
-	"bl2 raw 0x1f 0x1d;" \
-	"tzsw raw 0x83f 0x138\0"
 
 /*
  * Bootable media layout:
@@ -187,8 +137,6 @@
 	"mmcrootdev=0\0" \
 	"mmcrootpart=2\0" \
 	"bootdelay=0\0" \
-	"dfu_alt_system="CONFIG_DFU_ALT \
-	"dfu_alt_info=Please reset the board\0" \
 	"consoleon=set console console=ttySAC1,115200n8; save; reset\0" \
 	"consoleoff=set console console=ram; save; reset\0" \
 	"initrdname=uInitrd\0" \
@@ -200,13 +148,6 @@
 #define CONFIG_SYS_I2C_S3C24X0
 #define CONFIG_SYS_I2C_S3C24X0_SPEED	100000
 #define CONFIG_SYS_I2C_S3C24X0_SLAVE	0
-
-/* GPT */
-#define CONFIG_RANDOM_UUID
-
-/* Security subsystem - enable hw_rand() */
-#define CONFIG_EXYNOS_ACE_SHA
-#define CONFIG_LIB_HW_RAND
 
 #define CONFIG_CMD_GPIO
 
@@ -222,18 +163,17 @@
 #define CONFIG_USB_HOST_ETHER
 #define CONFIG_USB_ETHER_SMSC95XX
 
-/*
- * Supported Odroid boards: X3, U3
- * TODO: Add Odroid X support
- */
-#define CONFIG_MISC_COMMON
-#define CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG
-#define CONFIG_BOARD_TYPES
-#define CONFIG_MISC_INIT_R
-
-#undef CONFIG_REVISION_TAG
 
 /* add by me */
+
+#define BOOT_ONENAND		0x1
+#define BOOT_NAND		0x40000
+#define BOOT_MMCSD		0x3
+#define BOOT_NOR		0x4
+#define BOOT_SEC_DEV		0x5
+#define BOOT_EMMC		0x6
+#define BOOT_EMMC_4_4		0x7
+
 #define BIT0 				0x00000001
 #define BIT1 				0x00000002
 #define BIT2 				0x00000004
