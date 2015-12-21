@@ -22,6 +22,10 @@ SECTIONS
 		*(.__image_copy_start)
 		*(.vectors)
 		CPUDIR/start.o (.text*)
+		CONFIG_BOARDDIR/lowlevel_init.o (.text*)
+		CONFIG_BOARDDIR/clock_init_tiny4412.o (.text*)
+		CONFIG_BOARDDIR/mem_init_tiny4412.o (.text*)
+		CONFIG_BOARDDIR/irom_copy.o (.text*)
 		*(.text*)
 	}
 

@@ -14,7 +14,7 @@
 #include <version.h>
 #include <asm/arch/cpu.h>
 
-#include "tiny4212_val.h"
+#include "tiny4412_val.h"
 
 _TEXT_BASE:
 	.word	CONFIG_SYS_TEXT_BASE

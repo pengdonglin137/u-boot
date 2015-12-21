@@ -82,7 +82,7 @@ void uboot_mem_test(void)
 		if (*p != (i+0x5a000000)) {
 			uart_asm_putc('X');
 			uart_asm_putx(i);
-			uart_asm_putx(p);
+			uart_asm_putx((int)p);
 			if (i > 4) {
 				uart_asm_putx(*(p-4));
 				uart_asm_putx(*(p-3));
@@ -111,6 +111,6 @@ void uboot_mem_test(void)
 void movi_uboot_copy(void)
 {
 	uboot_mem_test();
-	SDMMC_ReadBlocks(MOVI_UBOOT_POS, MOVI_UBOOT_BLKCNT, CONFIG_PHY_UBOOT_BASE);
+	SDMMC_ReadBlocks(MOVI_UBOOT_POS, MOVI_UBOOT_BLKCNT, (u32 *)CONFIG_PHY_UBOOT_BASE);
 }
 
