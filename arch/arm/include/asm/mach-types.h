@@ -1062,6 +1062,7 @@ extern unsigned int __machine_arch_type;
 #define MACH_TYPE_MONCH                3453
 #define MACH_TYPE_CURACAO              3454
 #define MACH_TYPE_ORIGEN               3455
+#define MACH_TYPE_TINY4412             4608
 #define MACH_TYPE_EPC10                3456
 #define MACH_TYPE_SGH_I740             3457
 #define MACH_TYPE_TUNA                 3458
