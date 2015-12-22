@@ -137,7 +137,26 @@ after_copy:
 	ldr	r1, =0x4b4b4b4b
 	str	r1, [r0, #UTXH_OFFSET]
 
-	pop	{pc}
+	mov	r0, #'\r'
+	bl	uart_asm_putc
+	mov	r0, #'\n'
+	bl	uart_asm_putc
+	mov	r0, #'.'
+	bl	uart_asm_putc
+	ldr	r0, =_main
+	bl	uart_asm_putx
+	mov	r0, #'\r'
+	bl	uart_asm_putc
+	mov	r0, #'\n'
+	bl	uart_asm_putc
+
+	ldr	r1, =_main
+	ldr	r0, [r1, #0x00]
+	bl	uart_asm_putx
+	mov	r0, #'.'
+	bl	uart_asm_putc
+
+	ldr	pc, =_main
 
 read_om:
 	/* Read booting information */

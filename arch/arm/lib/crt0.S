@@ -59,7 +59,10 @@
  */
 
 ENTRY(_main)
-
+	/* led (GPM4_0~3) on */
+	ldr	r0, =0x110002E0
+	ldr	r1, =0x00
+	str	r1, [r0, #0x04]
 /*
  * Set up initial C runtime environment and call board_init_f(0).
  */

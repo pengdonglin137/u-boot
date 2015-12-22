@@ -110,7 +110,7 @@ void uboot_mem_test(void)
 
 void movi_uboot_copy(void)
 {
-	uboot_mem_test();
-	SDMMC_ReadBlocks(MOVI_UBOOT_POS, MOVI_UBOOT_BLKCNT, (u32 *)CONFIG_PHY_UBOOT_BASE);
+	//uboot_mem_test();
+	SDMMC_ReadBlocks(MOVI_UBOOT_POS, MOVI_UBOOT_BLKCNT, (u32 *)(CONFIG_PHY_UBOOT_BASE));
 }
 

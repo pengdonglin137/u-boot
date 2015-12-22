@@ -76,11 +76,6 @@ save_boot_params_ret:
 	bl	cpu_init_crit
 #endif
 
-	/* led (GPM4_0~3) on */
-	ldr	r0, =0x110002E0
-	ldr	r1, =0x00
-	str	r1, [r0, #0x04]
-
 	bl	_main
 
 /*------------------------------------------------------------------------------*/
