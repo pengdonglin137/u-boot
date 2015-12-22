@@ -57,6 +57,22 @@
 #define CONFIG_LMB
 
 /*
+ * MEMORY ORGANIZATION
+ * -Monitor at top of sdram.
+ * -The heap is placed below the monitor
+ * -The stack is placed below the heap (&grows down).
+ */
+#define CONFIG_SYS_SDRAM_BASE		0xD0000000
+#define CONFIG_SYS_SDRAM_SIZE		0x08000000
+#define CONFIG_NR_DRAM_BANKS		1
+#define CONFIG_MONITOR_IS_IN_RAM
+#define CONFIG_SYS_MONITOR_LEN		0x80000	/* Reserve 512k */
+#define CONFIG_SYS_MONITOR_BASE	(CONFIG_SYS_SDRAM_BASE + \
+					 CONFIG_SYS_SDRAM_SIZE - \
+					 CONFIG_SYS_MONITOR_LEN)
+#define CONFIG_SYS_MALLOC_LEN		0x20000
+
+/*
  * ENVIRONMENT -- Put environment in sector CONFIG_SYS_MONITOR_LEN above
  * CONFIG_SYS_RESET_ADDR, since we assume the monitor is stored at the
  * reset address, no? This will keep the environment in user region
@@ -67,23 +83,7 @@
 
 #define CONFIG_ENV_SIZE			0x20000	/* 128k, 1 sector */
 #define CONFIG_ENV_OVERWRITE		/* Serial change Ok	*/
-#define CONFIG_ENV_ADDR			0xe2840000
-
-/*
- * MEMORY ORGANIZATION
- * -Monitor at top of sdram.
- * -The heap is placed below the monitor
- * -The stack is placed below the heap (&grows down).
- */
-#define CONFIG_SYS_SDRAM_BASE		0xD0000000
-#define CONFIG_SYS_SDRAM_SIZE		0x08000000
-#define CONFIG_NR_DRAM_BANKS		1
-#define CONFIG_MONITOR_IS_IN_RAM
-#define CONFIG_SYS_MONITOR_LEN		0x40000	/* Reserve 256k */
-#define CONFIG_SYS_MONITOR_BASE	(CONFIG_SYS_SDRAM_BASE + \
-					 CONFIG_SYS_SDRAM_SIZE - \
-					 CONFIG_SYS_MONITOR_LEN)
-#define CONFIG_SYS_MALLOC_LEN		0x20000
+#define CONFIG_ENV_ADDR			(0xe2800000 + CONFIG_SYS_MONITOR_LEN)
 
 /*
  * MISC
@@ -95,12 +95,15 @@
 #define CONFIG_SYS_PBSIZE		(CONFIG_SYS_CBSIZE + \
 					sizeof(CONFIG_SYS_PROMPT) + \
 					 16)	/* Print buf size */
-#define CONFIG_SYS_LOAD_ADDR		CONFIG_SYS_SDRAM_BASE
+#define CONFIG_SYS_LOAD_ADDR		0xd4000000	/* Half of RAM */
+#define CONFIG_LOADADDR			CONFIG_SYS_LOAD_ADDR
 #define CONFIG_SYS_MEMTEST_START	CONFIG_SYS_SDRAM_BASE
 #define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_MONITOR_BASE - \
 					 CONFIG_ENV_SIZE - \
 					 CONFIG_SYS_MALLOC_LEN -	\
 					 0x10000)
+#define CONFIG_VERSION_VARIABLE
+#define CONFIG_AUTO_COMPLETE
 #define CONFIG_CMDLINE_EDITING
 
 #endif /* __CONFIG_H */
