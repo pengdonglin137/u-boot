@@ -1,5 +1,5 @@
 /*
- * Odroid-U3/X2 board device tree source
+ * Tiny4412 board device tree source
  *
  * Copyright (c) 2014 Samsung Electronics Co., Ltd.
  *		http://www.samsung.com
@@ -11,8 +11,8 @@
 #include "exynos4412.dtsi"
 
 / {
-	model = "Odroid based on Exynos4412";
-	compatible = "samsung,odroid", "samsung,exynos4412";
+	model = "Tiny4412 based on Exynos4412";
+	compatible = "samsung,tiny4412", "samsung,exynos4412";
 
 	aliases {
 		i2c0 = "/i2c@13860000";
