@@ -1307,6 +1307,11 @@ spl/u-boot-spl.bin: spl/u-boot-spl
 spl/u-boot-spl: tools prepare $(if $(CONFIG_OF_SEPARATE),dts/dt.dtb)
 	$(Q)$(MAKE) obj=spl -f $(srctree)/scripts/Makefile.spl all
 
+u-boot-spl.dis: spl/u-boot-spl.dis
+
+spl/u-boot-spl.dis: spl/u-boot-spl
+	$(OBJDUMP) -d $< > $@
+
 spl/sunxi-spl.bin: spl/u-boot-spl
 	@:
 

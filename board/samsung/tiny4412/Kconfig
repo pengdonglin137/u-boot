@@ -1,0 +1,12 @@
+if TARGET_TINY4412
+
+config SYS_BOARD
+	default "tiny4412"
+
+config SYS_VENDOR
+	default "samsung"
+
+config SYS_CONFIG_NAME
+	default "tiny4412"
+
+endif

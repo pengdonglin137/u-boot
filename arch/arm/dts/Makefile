@@ -5,7 +5,8 @@ dtb-$(CONFIG_EXYNOS4) += exynos4210-origen.dtb \
 	exynos4210-universal_c210.dtb \
 	exynos4210-trats.dtb \
 	exynos4412-trats2.dtb \
-	exynos4412-odroid.dtb
+	exynos4412-odroid.dtb \
+	exynos4412-tiny4412.dtb
 
 dtb-$(CONFIG_EXYNOS5) += exynos5250-arndale.dtb \
 	exynos5250-snow.dtb \
