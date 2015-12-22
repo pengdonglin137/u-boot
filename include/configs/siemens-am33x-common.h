@@ -27,7 +27,6 @@
 #define CONFIG_SYS_MALLOC_LEN		(16 * 1024 * 1024)
 #define CONFIG_SYS_LONGHELP		/* undef to save memory */
 #define CONFIG_SYS_HUSH_PARSER		/* use "hush" command parser */
-#define CONFIG_SYS_PROMPT		"U-Boot# "
 #define CONFIG_SYS_PROMPT_HUSH_PS2	"> "
 #define CONFIG_BOARD_LATE_INIT
 #define CONFIG_SYS_NO_FLASH
@@ -117,7 +116,6 @@
 /* NS16550 Configuration */
 #define CONFIG_SYS_NS16550
 #define CONFIG_SYS_NS16550_SERIAL
-#define CONFIG_SERIAL_MULTI
 #define CONFIG_SYS_NS16550_REG_SIZE	(-4)
 #define CONFIG_SYS_NS16550_CLK		(48000000)
 #define CONFIG_SYS_NS16550_COM1		0x44e09000
@@ -133,7 +131,7 @@
 #define CONFIG_I2C
 #define CONFIG_CMD_I2C
 #define CONFIG_SYS_I2C
-#define CONFIG_SYS_OMAP24_I2C_SPEED	OMAP_I2C_STANDARD
+#define CONFIG_SYS_OMAP24_I2C_SPEED	100000
 #define CONFIG_SYS_OMAP24_I2C_SLAVE	1
 #define CONFIG_SYS_I2C_OMAP24XX
 
@@ -226,30 +224,30 @@
  */
 #define CONFIG_USB_MUSB_DSPS
 #define CONFIG_ARCH_MISC_INIT
-#define CONFIG_MUSB_GADGET
-#define CONFIG_MUSB_PIO_ONLY
-#define CONFIG_MUSB_DISABLE_BULK_COMBINE_SPLIT
+#define CONFIG_USB_MUSB_GADGET
+#define CONFIG_USB_MUSB_PIO_ONLY
+#define CONFIG_USB_MUSB_DISABLE_BULK_COMBINE_SPLIT
 #undef CONFIG_USB_GADGET_DUALSPEED
 #define CONFIG_USB_GADGET_VBUS_DRAW	2
-#define CONFIG_MUSB_HOST
+#define CONFIG_USB_MUSB_HOST
 
 #define CONFIG_AM335X_USB0
 #define CONFIG_AM335X_USB0_MODE	MUSB_PERIPHERAL
 #define CONFIG_AM335X_USB1
 #define CONFIG_AM335X_USB1_MODE MUSB_HOST
-#ifdef CONFIG_MUSB_HOST
+#ifdef CONFIG_USB_MUSB_HOST
 #define CONFIG_CMD_USB
 #define CONFIG_USB_STORAGE
 #endif
 
-#ifdef CONFIG_MUSB_GADGET
+#ifdef CONFIG_USB_MUSB_GADGET
 #define CONFIG_USB_ETHER
 #define CONFIG_USB_ETH_RNDIS
 #define CONFIG_USBNET_HOST_ADDR	"de:ad:be:af:00:00"
-#endif /* CONFIG_MUSB_GADGET */
+#endif /* CONFIG_USB_MUSB_GADGET */
 
 #define CONFIG_USB_GADGET
-#define CONFIG_USBDOWNLOAD_GADGET
+#define CONFIG_USB_GADGET_DOWNLOAD
 
 /* USB DRACO ID as default */
 #define CONFIG_USBD_HS
@@ -258,7 +256,7 @@
 #define CONFIG_G_DNL_MANUFACTURER "Siemens AG"
 
 /* USB Device Firmware Update support */
-#define CONFIG_DFU_FUNCTION
+#define CONFIG_USB_FUNCTION_DFU
 #define CONFIG_DFU_NAND
 #define CONFIG_CMD_DFU
 #define CONFIG_SYS_DFU_DATA_BUF_SIZE	(1 << 20)
@@ -480,7 +478,7 @@
 
 /*
  * Variant 2 partition layout
- * chip-size = 256MiB
+ * chip-size = 256MiB or 512 MiB
  *|         name |        size |           address area |
  *-------------------------------------------------------
  *|          spl | 128.000 KiB | 0x       0..0x   1ffff |
@@ -490,23 +488,23 @@
  *|       u-boot |   1.875 MiB | 0x   80000..0x  25ffff |
  *|   uboot.env0 | 512.000 KiB | 0x  260000..0x  2Dffff |
  *|   uboot.env1 | 512.000 KiB | 0x  2E0000..0x  35ffff |
- *|       rootfs | 148.000 MiB | 0x  360000..0x 975ffff |
- *|      mtdoops | 512.000 KiB | 0x 9760000..0x 98Dffff |
- *|configuration | 104.125 MiB | 0x 97E0000..0x fffffff |
+ *|      mtdoops | 512.000 KiB | 0x  360000..0x  3dffff |
+ *| (256) rootfs | 252.125 MiB | 0x  3E0000..0x fffffff |
+ *| (512) rootfs | 508.125 MiB | 0x  3E0000..0x1fffffff |
  *-------------------------------------------------------
  */
 
 #define MTDPARTS_DEFAULT_V2	"mtdparts=" MTDIDS_NAME_STR ":" \
-					"128k(spl),"		\
-					"128k(spl.backup1),"	\
-					"128k(spl.backup2),"	\
-					"128k(spl.backup3),"	\
-					"1920k(u-boot),"	\
-					"512k(u-boot.env0),"	\
-					"512k(u-boot.env1),"	\
-					"148m(rootfs),"		\
-					"512k(mtdoops),"	\
-					"-(configuration)"
+					"128k(spl)," \
+					"128k(spl.backup1)," \
+					"128k(spl.backup2)," \
+					"128k(spl.backup3)," \
+					"1920k(u-boot)," \
+					"512k(u-boot.env0)," \
+					"512k(u-boot.env1)," \
+					"512k(mtdoops)," \
+					"-(rootfs)"
+
 
 #define DFU_ALT_INFO_NAND_V2 \
 	"spl part 0 1;" \
@@ -516,8 +514,7 @@
 	"u-boot part 0 5;" \
 	"u-boot.env0 part 0 6;" \
 	"u-boot.env1 part 0 7;" \
-	"rootfs partubi 0 8;" \
-	"configuration partubi 0 10"
+	"rootfs partubi 0 9" \
 
 #define CONFIG_ENV_SETTINGS_NAND_V2 \
 	"nand_active_ubi_vol=rootfs_a\0" \
@@ -534,7 +531,7 @@
 			"setenv nand_active_ubi_vol ${rootfs_name}_b;" \
 		"fi;" \
 		"setenv nand_root ubi0:${nand_active_ubi_vol} rw " \
-		"ubi.mtd=7,2048 ubi.mtd=9,2048;" \
+		"ubi.mtd=rootfs,2048;" \
 		"setenv bootargs ${bootargs} " \
 		"root=${nand_root} noinitrd ${mtdparts} " \
 		"rootfstype=${nand_root_fs_type} ip=${ip_method} " \

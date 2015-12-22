@@ -15,6 +15,7 @@
 #define CONFIG_OF_LIBFDT
 
 #define CONFIG_BOARD_EARLY_INIT_F
+#define CONFIG_MISC_INIT_R
 
 #define CONFIG_SYS_FLASH_BASE		0x08000000
 
@@ -52,14 +53,16 @@
 #define CONFIG_STM32_SERIAL
 /*
  * Configuration of the USART
- * 1:   TX:PA9  PX:PA10
+ * 1:   TX:PA9  RX:PA10
  * 2:   TX:PD5  RX:PD6
  * 3:   TX:PC10 RX:PC11
- * 6:   TX:PC6  RX:PC7
+ * 6:   TX:PG14 RX:PG9
  */
 #define CONFIG_STM32_USART		1
 
 #define CONFIG_STM32_HSE_HZ		8000000
+
+#define CONFIG_SYS_CLK_FREQ		180000000 /* 180 MHz */
 
 #define CONFIG_SYS_HZ_CLOCK		1000000	/* Timer is clocked at 1MHz */
 
@@ -80,7 +83,7 @@
 
 #define CONFIG_BAUDRATE			115200
 #define CONFIG_BOOTARGS							\
-	"console=ttystm0,115200 earlyprintk consoleblank=0 ignore_loglevel"
+	"console=ttyS0,115200 earlyprintk consoleblank=0 ignore_loglevel"
 #define CONFIG_BOOTCOMMAND						\
 	"run bootcmd_romfs"
 
@@ -97,7 +100,6 @@
  */
 #define CONFIG_SYS_LONGHELP
 #define CONFIG_SYS_HUSH_PARSER
-#define CONFIG_SYS_PROMPT	       "U-Boot > "
 #define CONFIG_AUTO_COMPLETE
 #define CONFIG_CMDLINE_EDITING
 
