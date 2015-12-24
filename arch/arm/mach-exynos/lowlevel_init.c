@@ -168,6 +168,37 @@ static void secondary_cores_configure(void)
 extern void relocate_wait_code(void);
 #endif
 
+#if 0
+void mem_test(void)
+{
+#define MEMORY_SIZE (10*1024*1024)
+	volatile unsigned char *p = (volatile unsigned char *)(0x40000000);
+	int i;
+	for (i=0; i<MEMORY_SIZE; i++) {
+		*p++ = 0x55;
+	}
+
+	p = (volatile unsigned char *)(0x40000000);
+	for (i=0; i<MEMORY_SIZE; i++) {
+		if (*p++ != 0x55)
+		{
+			printascii("mem test error: addr:");
+			printhex8((uint)p);
+			printascii("  value: ");
+			printhex2((uint)(*p));
+			printascii("\n\r");
+			break;
+		}
+	}
+
+	if (i >= MEMORY_SIZE)
+		printascii("mem test ok.\n\r");
+	else
+		printascii("mem test error.\n\r");
+
+}
+#endif
+
 int do_lowlevel_init(void)
 {
 	uint32_t reset_status;
@@ -218,9 +249,12 @@ int do_lowlevel_init(void)
 #ifdef CONFIG_DEBUG_UART
 		exynos_pinmux_config(PERIPH_ID_UART0, PINMUX_FLAG_NONE);
 		debug_uart_init();
-		printascii("UART OK.\n");
+		printascii("UART OK.\n\r");
 #endif
 		mem_ctrl_init(actions & DO_MEM_RESET);
+#if 0
+		mem_test();
+#endif
 		tzpc_init();
 	}
 
