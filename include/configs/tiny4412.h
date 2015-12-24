@@ -14,6 +14,13 @@
 /* High Level Configuration Options */
 #define CONFIG_TINY4412			1
 
+#define CONFIG_SPL_SERIAL_SUPPORT
+#define CONFIG_SPL_GPIO_SUPPORT
+#define CONFIG_DEBUG_UART
+#define CONFIG_DEBUG_UART_S5P
+#define CONFIG_DEBUG_UART_BASE 0x13800000	/* UART0 base address  */
+#define CONFIG_DEBUG_UART_CLOCK (100000000)	/* SCLK_UART0 is 100MHz  */
+
 #define CONFIG_SYS_DCACHE_OFF		1
 
 /* ORIGEN has 4 bank of DRAM */

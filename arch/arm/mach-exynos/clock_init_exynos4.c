@@ -161,7 +161,7 @@ void system_clock_init(void)
 
 	/* Switch back CMU_DMC mux */
 	set = MUX_C2C_SEL(0) | MUX_DMC_BUS_SEL(0) | MUX_DPHY_SEL(0) |
-	      MUX_MPLL_SEL(1) | MUX_PWI_SEL(8) | MUX_G2D_ACP0_SEL(0) |
+	      MUX_MPLL_SEL(1) | MUX_PWI_SEL(6) | MUX_G2D_ACP0_SEL(0) |
 	      MUX_G2D_ACP1_SEL(0) | MUX_G2D_ACP_SEL(0);
 
 	clrsetbits_le32(&clk->src_dmc, clr_src_dmc, set);
@@ -201,14 +201,14 @@ void system_clock_init(void)
 	 * For:
 	 * MOUTg2d = 800 MHz
 	 * MOUTc2c = 800 Mhz
-	 * MOUTpwi = 108 MHz
+	 * MOUTpwi = 800 MHz
 	 *
 	 * sclk_g2d_acp = MOUTg2d / (ratio + 1) = 200 (3)
 	 * sclk_c2c = MOUTc2c / (ratio + 1) = 400 (1)
 	 * aclk_c2c = sclk_c2c / (ratio + 1) = 200 (1)
-	 * sclk_pwi = MOUTpwi / (ratio + 1) = 18 (5)
+	 * sclk_pwi = MOUTpwi / (ratio + 1) = 100 (7)
 	 */
-	set = G2D_ACP_RATIO(3) | C2C_RATIO(1) | PWI_RATIO(5) |
+	set = G2D_ACP_RATIO(3) | C2C_RATIO(1) | PWI_RATIO(7) |
 	      C2C_ACLK_RATIO(1) | DVSEM_RATIO(1) | DPM_RATIO(1);
 
 	clrsetbits_le32(&clk->div_dmc1, clr, set);
