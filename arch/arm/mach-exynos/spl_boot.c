@@ -15,6 +15,7 @@
 #include <asm/arch/power.h>
 #include <asm/arch/spl.h>
 #include <asm/arch/spi.h>
+#include <debug_uart.h>
 
 #include "common_setup.h"
 #include "clock_init.h"
@@ -213,6 +214,13 @@ void copy_uboot_to_ram(void)
 
 	if (bootmode == BOOT_MODE_OM)
 		bootmode = get_boot_mode();
+#ifdef UBOOT_DEBUG_20151226
+	{
+		printascii("bootmode: ");
+		printhex8((uint)bootmode);
+		printascii("\n\r");
+	}
+#endif
 
 	switch (bootmode) {
 #ifdef CONFIG_SPI_BOOTING
@@ -253,9 +261,71 @@ void copy_uboot_to_ram(void)
 	default:
 		break;
 	}
+#ifdef UBOOT_DEBUG_20151226
+	{
+		printascii("copy_uboot: ");
+		printhex8((uint)copy_uboot);
+		printascii("\n\r");
 
+		printascii("offset: ");
+		printhex8((uint)offset);
+		printascii("\n\r");
+
+		printascii("size: ");
+		printhex8((uint)size);
+		printascii("\n\r");
+	}
+
+	{
+		volatile unsigned int *p = (volatile unsigned int *)0x43e00000;
+		int i = 0;
+
+		for (i=0; i < 0x1000; i++) {
+			*p++ = 0x55555555;
+		}
+	}
+#endif
+
+#ifdef CONFIG_TINY4412
+	if (copy_uboot)
+	{
+		/*
+		 * Here I use iram 0x020250000-0x020260000 (64k)
+		 * as an buffer, and copy u-boot from sd card to 
+		 * this buffer, then copy it to dram started 
+		 * from 0x43e00000.
+		 *
+		 */
+		unsigned int i, count = 0;
+		unsigned char *buffer = (unsigned char *)0x02050000;
+		unsigned char *dst = (unsigned char *)CONFIG_SYS_TEXT_BASE;
+		unsigned int step = (0x10000 / 512);
+
+		for (count = 0; count < UBOOT_SIZE_BLOC_COUNT; count+=step) {
+			copy_uboot((u32)(UBOOT_START_OFFSET+count), (u32)step, (u32)buffer);
+			for (i=0; i<0x10000; i++) {
+				*dst++ = buffer[i];
+			}
+		}
+	}
+#else
 	if (copy_uboot)
 		copy_uboot(offset, size, CONFIG_SYS_TEXT_BASE);
+#endif
+
+#ifdef UBOOT_DEBUG_20151226
+	{
+		volatile unsigned int *p = (volatile unsigned int *)0x43e00000;
+		int i = 0;
+
+		for (i=0; i < 0x1000; i++) {
+			if (i%4 == 0)
+				printascii("\n\r");
+			printhex8(*p++);
+			printch(' ');
+		}
+	}
+#endif
 }
 
 void memzero(void *s, size_t n)

@@ -58,6 +58,7 @@
 #endif
 #include <dm/root.h>
 #include <linux/compiler.h>
+#include <debug_uart.h>
 
 /*
  * Pointer to initial global data area

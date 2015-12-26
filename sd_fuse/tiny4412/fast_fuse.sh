@@ -42,7 +42,7 @@ fi
 # check files
 
 E4412_SPL=../../spl/u-boot-spl.bin
-E4412_UBOOT=../../u-boot.bin
+E4412_UBOOT=../../u-boot-dtb.bin
 MKBL2=../mkbl2
 
 if [ ! -f ${E4412_SPL} ]; then
@@ -51,7 +51,7 @@ if [ ! -f ${E4412_SPL} ]; then
 fi
 
 if [ ! -f ${E4412_UBOOT} ]; then
-	echo "Error: u-boot.bin NOT found, please build it & try again."
+	echo "Error: u-boot-dtb.bin NOT found, please build it & try again."
 	exit -1
 fi
 
@@ -67,7 +67,7 @@ ${MKBL2} ${E4412_SPL} bl2.bin 14336
 # fusing images
 
 bl2_position=17
-uboot_position=49
+uboot_position=81
 
 #<BL2 fusing>
 echo "---------------------------------------"

@@ -245,6 +245,18 @@ int do_lowlevel_init(void)
 		set_ps_hold_ctrl();
 
 	if (actions & DO_CLOCKS) {
+#ifdef UBOOT_DEBUG_20151226
+		{
+			volatile unsigned int *p = (volatile unsigned int *)0x02050000;
+			int i;
+
+			for(i=0; i<0x2000; i++) {
+				*p++ = 0x00000000;
+			}
+
+			 ((void(*)(u32, u32, u32*))(*((u32 *)0x02020030)))((u32)81, (u32)1, (u32 *)0x02050000);
+		}
+#endif
 		system_clock_init();
 #ifdef CONFIG_DEBUG_UART
 		exynos_pinmux_config(PERIPH_ID_UART0, PINMUX_FLAG_NONE);
@@ -256,6 +268,46 @@ int do_lowlevel_init(void)
 		mem_test();
 #endif
 		tzpc_init();
+#ifdef UBOOT_DEBUG_20151226
+		{
+			 ((void(*)(u32, u32, u32*))(*((u32 *)0x02020030)))((u32)81, (u32)1, (u32 *)0x02051000);
+
+			 *(volatile unsigned int *)0x40000000 = 0xAAAA5555;
+			 ((void(*)(u32, u32, u32*))(*((u32 *)0x02020030)))((u32)81, (u32)1, (u32 *)0x40000000);
+		}
+
+		{
+			int i;
+			volatile unsigned int *p = (volatile unsigned int *)0x02050000;
+			printascii("0x02050000:\n\r");
+			for(i=0; i<0x10; i++) {
+				if (i%4 == 0)
+					printascii("\n\r");
+				printhex8((uint)(*p++));
+				printch(' ');
+			}
+
+			p = (volatile unsigned int *)0x02051000;
+			printascii("\n\r0x02051000:\n\r");
+			for(i=0; i<0x10; i++) {
+				if (i%4 == 0)
+					printascii("\n\r");
+				printhex8((uint)(*p++));
+				printch(' ');
+			}
+
+			p = (volatile unsigned int *)0x40000000;
+			printascii("\n\r0x40000000:\n\r");
+			for(i=0; i<0x10; i++) {
+				if (i%4 == 0)
+					printascii("\n\r");
+				printhex8((uint)(*p++));
+				printch(' ');
+			}
+
+			printascii("\n\r");
+		}
+#endif
 	}
 
 	return actions & DO_WAKEUP;

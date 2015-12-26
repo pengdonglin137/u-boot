@@ -42,7 +42,7 @@ fi
 # check files
 
 E4412_SPL=../../spl/u-boot-spl.bin
-E4412_UBOOT=../../u-boot.bin
+E4412_UBOOT=../../u-boot-dtb.bin
 MKBL2=../mkbl2
 
 if [ ! -f ${E4412_SPL} ]; then
@@ -68,7 +68,7 @@ ${MKBL2} ${E4412_SPL} bl2.bin 14336
 
 signed_bl1_position=1
 bl2_position=17
-uboot_position=49
+uboot_position=81
 tzsw_position=705
 
 #<BL1 fusing>
