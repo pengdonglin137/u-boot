@@ -101,6 +101,8 @@ static int s5p_serial_probe(struct udevice *dev)
 {
 	struct s5p_serial_platdata *plat = dev->platdata;
 	struct s5p_uart *const uart = plat->reg;
+	
+	//printf("%s enter, uart: 0x%p\n", __func__, uart);
 
 	s5p_serial_init(uart);
 
