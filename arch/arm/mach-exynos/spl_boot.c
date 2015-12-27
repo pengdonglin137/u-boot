@@ -302,7 +302,9 @@ void copy_uboot_to_ram(void)
 		unsigned int step = (0x10000 / 512);
 
 		for (count = 0; count < UBOOT_SIZE_BLOC_COUNT; count+=step) {
+			/* copy u-boot from sdcard to iram firstly.  */
 			copy_uboot((u32)(UBOOT_START_OFFSET+count), (u32)step, (u32)buffer);
+			/* then copy u-boot from iram to dram. */
 			for (i=0; i<0x10000; i++) {
 				*dst++ = buffer[i];
 			}
