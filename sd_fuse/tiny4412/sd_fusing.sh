@@ -69,7 +69,7 @@ ${MKBL2} ${E4412_SPL} bl2.bin 14336
 signed_bl1_position=1
 bl2_position=17
 uboot_position=81
-tzsw_position=705
+tzsw_position=1105
 
 #<BL1 fusing>
 echo "---------------------------------------"
